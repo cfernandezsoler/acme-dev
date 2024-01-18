@@ -40,6 +40,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: acme
     ports:
-      - "3307:3307"
+      - "3306:3306"
     volumes:
       - ./db/seed.sql:/docker-entrypoint-initdb.d/1-seed.sql
