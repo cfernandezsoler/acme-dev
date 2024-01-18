@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  acme-front:
+    container_name: acme-front
+    build:
+      context: ../acme-front/.
+      dockerfile: Dockerfile.dev
+    volumes:
+      - "../acme-front/.:/app/."
+      - "/app/node_modules"
+    ports:
+      - "3000:3000"
+    environment:
+      - ACME_API_URL=http://acme-back:8080
+
+  acme-back:
+    container_name: acme-back
+    build:
+      context: ../acme-back/.
+      dockerfile: Dockerfile.dev
+    volumes:
+      - "../acme-back/.:/app/."
+      - "/app/node_modules"
+    ports:
+      - "8080:8080"
+    command: npm run dev
+    environment:
+      - DB_HOST=acme-db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=acme
+      - PORT=8080
+
+  acme-db:
+    container_name: acme-db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: acme
+    ports:
+      - "3307:3307"
+    volumes:
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/1-seed.sql
